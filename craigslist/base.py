@@ -310,7 +310,7 @@ class CraigslistBase(object):
             elif attr == "cats are OK - purrr":
                 result['cats_ok'] = True
             elif attr == "dogs are OK - wooof":
-                result['cats_ok'] = True
+                result['dogs_ok'] = True
             elif attr == "furnished":
                 result['furnished'] = True
 
