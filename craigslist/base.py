@@ -269,8 +269,7 @@ class CraigslistBase(object):
 
         for attr in attrs:
             if "Ba" in attr:
-                self.logger.debug("split {}, sub {}".format(attr.split('/')[1], re.sub('[^0-9]','', attr.split('/')[1])))
-                bathrooms = re.sub('[^0-9]','', attr.split('/')[1])
+                bathrooms = re.sub('[^0-9.]','', attr.split('/')[1])
                 result['bathrooms'] = float(bathrooms)
             elif attr in HOUSING_TYPES:
                 result['house_type'] = attr 
