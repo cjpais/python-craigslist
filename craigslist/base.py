@@ -276,6 +276,10 @@ class CraigslistBase(object):
                     self.logger.error('Problem getting bathroom float from'
                             '{}'.format(re.sub('[^0-9.]','',
                                 attr.split('/')[1])))
+                except IndexError:
+                    self.logger.error('Problem getting bathroom index from'
+                            '{}'.format(attr.split('/')))
+
             elif attr in HOUSING_TYPES:
                 result['house_type'] = attr 
             elif attr in LAUNDRY_TYPES:
