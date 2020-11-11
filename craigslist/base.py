@@ -1,3 +1,4 @@
+import re
 import logging
 try:
     from Queue import Queue  # PY2
@@ -16,6 +17,16 @@ from .utils import bs, requests_get, get_all_sites, get_list_filters
 
 ALL_SITES = get_all_sites()  # All the Craiglist sites
 RESULTS_PER_REQUEST = 100  # Craigslist returns 100 results per request
+
+# define types directly from craigslist housing
+HOUSING_TYPES = ["apartment", "condo", "cottage/cabin", "duplex", "flat", 
+                 "house", "in-law", "loft", "townhouse", "manufactured", 
+                 "assisted living", "land"]
+LAUNDRY_TYPES = ["w/d in unit", "w/d hookups", "laundry in bldg", 
+                 "laundry on site", "no laundry on site"]
+PARKING_TYPES = ["carport", "attached garage", "detached garage", 
+                 "off-street parking", "street parking", 
+                 "valet parking", "no parking"]
 
 
 class CraigslistBase(object):
@@ -276,6 +287,33 @@ class CraigslistBase(object):
                                 float(map_.attrs['data-longitude']))
 
         return result
+
+    def process_attrs(self, result, attrs):
+        result['bathrooms'] = None
+        result['house_type'] = None
+        result['laundry_type'] = None
+        result['parking_type'] = None
+        result['cats_ok'] = None
+        result['dogs_ok'] = None
+        result['furnished'] = None
+
+        for attr in attrs:
+            if "Ba" in attr:
+                self.logger.debug("split {}, sub {}".format(attr.split('/')[1], re.sub('[^0-9]','', attr.split('/')[1])))
+                bathrooms = re.sub('[^0-9]','', attr.split('/')[1])
+                result['bathrooms'] = float(bathrooms)
+            elif attr in HOUSING_TYPES:
+                result['house_type'] = attr 
+            elif attr in LAUNDRY_TYPES:
+                result['laundry_type'] = attr
+            elif attr in PARKING_TYPES:
+                result['parking_type'] = attr
+            elif attr == "cats are OK - purrr":
+                result['cats_ok'] = True
+            elif attr == "dogs are OK - wooof":
+                result['cats_ok'] = True
+            elif attr == "furnished":
+                result['furnished'] = True
 
     def include_details(self, result, soup):
         """ Adds description, images to result """
