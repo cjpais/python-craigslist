@@ -377,9 +377,11 @@ class CraigslistBase(object):
                 attr_text = attr.text.strip()
                 if attr_text:
                     attrs.append(attr_text)
+
         result['attrs'] = attrs
         if attrs:
             self.parse_attrs(result)
+            self.process_attrs(result, attrs)
 
         # If an address is included, add it to `address`.
         mapaddress = soup.find('div', {'class': 'mapaddress'})
