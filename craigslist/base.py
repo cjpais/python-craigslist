@@ -260,10 +260,11 @@ class CraigslistBase(object):
 
         if geotagged or include_details:
             detail_soup = self.fetch_content(result['url'])
-            if geotagged:
-                self.geotag_result(result, detail_soup)
-            if include_details:
-                self.include_details(result, detail_soup)
+            if detail_soup:
+                if geotagged:
+                    self.geotag_result(result, detail_soup)
+                if include_details:
+                    self.include_details(result, detail_soup)
 
         if self.custom_result_fields:
             self.customize_result(result)
