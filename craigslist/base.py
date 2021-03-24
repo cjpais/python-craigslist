@@ -256,7 +256,8 @@ class CraigslistBase(object):
                   # field will be marked as True. If you want to be extra
                   # careful, always check this field is False before using a
                   # result.
-                  'deleted': False}
+                  'deleted': False,
+                  'error': False}
 
         if geotagged or include_details:
             detail_soup = self.fetch_content(result['url'])
@@ -265,6 +266,8 @@ class CraigslistBase(object):
                     self.geotag_result(result, detail_soup)
                 if include_details:
                     self.include_details(result, detail_soup)
+            else:
+                result['error'] = True
 
         if self.custom_result_fields:
             self.customize_result(result)
